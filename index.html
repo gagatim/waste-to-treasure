@@ -267,44 +267,62 @@
   .conveyor svg { position: relative; background: var(--bg); padding: 0 8px; }
   .conveyor svg path { stroke: var(--muted); }
 
-  /* Target tiles */
-  .targets {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .tile {
-    border: 1.5px solid var(--border);
+  /* Randomizer */
+  .randomizer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1.5px dashed var(--border);
     background: var(--surface-2);
     border-radius: 16px;
-    padding: 16px 12px;
+    padding: 14px 16px;
+  }
+
+  .randomizer-icons {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    text-align: center;
-    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+    gap: 6px;
+    flex: none;
   }
-  .tile:hover { transform: translateY(-2px); }
-  .tile:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-  .tile svg { width: 34px; height: 34px; }
-
-  .tile[data-target="water"] svg { color: var(--water); }
-  .tile[data-target="food"] svg { color: var(--food); }
-
-  .tile-name { font-weight: 700; font-size: 1rem; }
-  .tile-rate { font-size: 0.78rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
-
-  .tile.selected[data-target="water"] {
-    border-color: var(--water);
-    background: var(--water-soft);
+  .randomizer-icons svg { width: 26px; height: 26px; }
+  .randomizer-icons svg:first-child { color: var(--water); }
+  .randomizer-icons svg:last-child { color: var(--food); }
+  .randomizer-icons .vs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
   }
-  .tile.selected[data-target="food"] {
-    border-color: var(--food);
-    background: var(--food-soft);
+
+  .randomizer-desc {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
   }
+  .randomizer-desc strong { color: var(--ink); }
+
+  /* Split bar */
+  .split-bar {
+    display: flex;
+    height: 10px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--border);
+    margin-top: 10px;
+  }
+  .split-water, .split-food { height: 100%; width: 0%; transition: width 0.5s ease; }
+  .split-water { background: var(--water); }
+  .split-food { background: var(--food); }
+
+  .split-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .split-labels .lbl-water { color: var(--water); font-weight: 600; }
+  .split-labels .lbl-food { color: var(--food); font-weight: 600; }
 
   /* Convert button */
   .convert-btn {
@@ -397,11 +415,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .result { animation: none; }
-    .tile, .qty-btn, .convert-btn { transition: none; }
-  }
-
-  @media (max-width: 380px) {
-    .targets { grid-template-columns: 1fr; }
+    .qty-btn, .convert-btn, .split-water, .split-food { transition: none; }
   }
 </style>
 </head>
@@ -410,7 +424,7 @@
   <header>
     <span class="eyebrow">資源轉換站</span>
     <h1>變廢為寶</h1>
-    <p class="tagline">把手上的垃圾,以 1:1 比例換成水或糧食</p>
+    <p class="tagline">輸入垃圾數量,電腦以 1:1 比例隨機轉換成水或糧食</p>
   </header>
 
   <div class="card">
@@ -446,26 +460,22 @@
     <div class="step">
       <div class="step-label">
         <span class="step-num">2</span>
-        <span class="step-title">選擇要轉換成什麼</span>
+        <span class="step-title">電腦隨機分配</span>
       </div>
 
-      <div class="targets" role="radiogroup" aria-label="轉換目標">
-        <button class="tile selected" type="button" data-target="water" role="radio" aria-checked="true">
+      <div class="randomizer">
+        <div class="randomizer-icons" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
             <path d="M12 2C12 2 5 11 5 15.5C5 19.6 8.13 22 12 22C15.87 22 19 19.6 19 15.5C19 11 12 2 12 2Z"/>
           </svg>
-          <span class="tile-name">水</span>
-          <span class="tile-rate">1 垃圾 → 1 水</span>
-        </button>
-        <button class="tile" type="button" data-target="food" role="radio" aria-checked="false">
+          <span class="vs">/</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 21V10"/>
             <path d="M12 10C12 10 6 9 6 3C10 3 12 6 12 10Z"/>
             <path d="M12 14C12 14 18 13 18 7C14 7 12 10 12 14Z"/>
           </svg>
-          <span class="tile-name">糧食</span>
-          <span class="tile-rate">1 垃圾 → 1 糧食</span>
-        </button>
+        </div>
+        <p class="randomizer-desc"><strong>水與糧食各 50% 機率</strong>,由系統隨機決定,玩家無法選擇。</p>
       </div>
     </div>
 
@@ -476,12 +486,20 @@
         <path d="M5.5 9A7 7 0 0 1 19 8"/>
         <path d="M18.5 15A7 7 0 0 1 5 16"/>
       </svg>
-      <span>轉換</span>
+      <span id="convertBtnLabel">轉換</span>
     </button>
 
     <div class="result" id="result">
-      <div class="result-title" id="resultTitle">✅ 轉換完成</div>
-      <div class="result-detail" id="resultDetail">垃圾 -0 → 水 +0</div>
+      <div class="result-title" id="resultTitle">🎲 分配完成</div>
+      <div class="result-detail" id="resultDetail">垃圾 -0 → 水 +0 ・ 糧食 +0</div>
+      <div class="split-bar" aria-hidden="true">
+        <div class="split-water" id="splitWater"></div>
+        <div class="split-food" id="splitFood"></div>
+      </div>
+      <div class="split-labels">
+        <span class="lbl-water" id="splitWaterLabel">水 0%</span>
+        <span class="lbl-food" id="splitFoodLabel">糧食 0%</span>
+      </div>
     </div>
 
     <div class="totals">
@@ -490,7 +508,7 @@
     </div>
   </div>
 
-  <footer>1 垃圾 = 1 資源,轉換沒有耗損</footer>
+  <footer>1 垃圾 = 1 資源,每一份垃圾各有 50% 機率變成水或糧食</footer>
 </div>
 
 <script>
@@ -500,15 +518,18 @@
   var qtyPlus = document.getElementById('qtyPlus');
   var qtyClear = document.getElementById('qtyClear');
   var chips = document.querySelectorAll('.chip[data-add]');
-  var tiles = document.querySelectorAll('.tile');
   var convertBtn = document.getElementById('convertBtn');
+  var convertBtnLabel = document.getElementById('convertBtnLabel');
   var result = document.getElementById('result');
   var resultDetail = document.getElementById('resultDetail');
+  var splitWater = document.getElementById('splitWater');
+  var splitFood = document.getElementById('splitFood');
+  var splitWaterLabel = document.getElementById('splitWaterLabel');
+  var splitFoodLabel = document.getElementById('splitFoodLabel');
   var totalsValues = document.getElementById('totalsValues');
   var resetTotals = document.getElementById('resetTotals');
 
   var MAX_QTY = 99999;
-  var target = 'water';
   var totals = { water: 0, food: 0 };
 
   function loadTotals() {
@@ -561,31 +582,43 @@
     });
   });
 
-  tiles.forEach(function (tile) {
-    tile.addEventListener('click', function () {
-      tiles.forEach(function (t) {
-        t.classList.remove('selected');
-        t.setAttribute('aria-checked', 'false');
-      });
-      tile.classList.add('selected');
-      tile.setAttribute('aria-checked', 'true');
-      target = tile.dataset.target;
-    });
-  });
+  function randomSplit(qty) {
+    var water = 0;
+    for (var i = 0; i < qty; i++) {
+      if (Math.random() < 0.5) water++;
+    }
+    return { water: water, food: qty - water };
+  }
 
   convertBtn.addEventListener('click', function () {
     var qty = getQty();
     if (qty <= 0) return;
 
-    totals[target] += qty;
-    saveTotals();
-    renderTotals();
+    convertBtn.disabled = true;
+    convertBtnLabel.textContent = '分配中…';
 
-    var label = target === 'water' ? '水' : '糧食';
-    resultDetail.textContent = '垃圾 -' + qty + ' → ' + label + ' +' + qty;
-    result.classList.add('show');
+    setTimeout(function () {
+      var split = randomSplit(qty);
 
-    setQty(0);
+      totals.water += split.water;
+      totals.food += split.food;
+      saveTotals();
+      renderTotals();
+
+      resultDetail.textContent = '垃圾 -' + qty + ' → 水 +' + split.water + ' ・ 糧食 +' + split.food;
+
+      var waterPct = Math.round((split.water / qty) * 100);
+      var foodPct = 100 - waterPct;
+      splitWater.style.width = waterPct + '%';
+      splitFood.style.width = foodPct + '%';
+      splitWaterLabel.textContent = '水 ' + waterPct + '%';
+      splitFoodLabel.textContent = '糧食 ' + foodPct + '%';
+
+      result.classList.add('show');
+
+      convertBtnLabel.textContent = '轉換';
+      setQty(0);
+    }, 450);
   });
 
   resetTotals.addEventListener('click', function () {
