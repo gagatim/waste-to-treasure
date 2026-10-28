@@ -2,416 +2,231 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>變廢為寶</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♻️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
 <style>
+  /* 明亮版型：淡藍底、深藍文字、水=藍綠、糧食=桃紅、低彩度幾何背景；單欄置中 */
   :root {
-    --bg: #EDEEE3;
-    --bg-vignette: #E2E6D5;
-    --surface: #FFFFFF;
-    --surface-2: #E6E8D8;
-    --ink: #1E2B20;
-    --muted: #5C6B5C;
-    --border: #D7D9C7;
-    --brand: #3D6B4C;
-    --brand-dark: #274935;
-    --brand-ink: #FFFFFF;
-    --gold: #C68A2E;
-    --gold-soft: #F4E6C8;
-    --water: #2D7FA0;
-    --water-soft: #DCEEF4;
-    --food: #B8792A;
-    --food-soft: #F2E4CC;
-    --shadow: 0 20px 45px -25px rgba(30, 43, 32, 0.45);
-    --focus: #2D7FA0;
+    --bg: #F2F8FC;
+    --navy: #152747;
+    --muted: #52627A;
+    --card: #FFFFFF;
+    --line: #D9E6F0;
+    --soft: #EAF3F9;
+    --teal: #007FA3;
+    --teal-soft: #E1F1F7;
+    --pink: #ED5291;
+    --pink-ink: #C2336F;
+    --pink-soft: #FCE6EF;
+    --shadow: 0 18px 40px -22px rgba(21, 39, 71, 0.35);
+    color-scheme: light;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #101B14;
-      --bg-vignette: #16241A;
-      --surface: #182619;
-      --surface-2: #1F3020;
-      --ink: #E9ECDD;
-      --muted: #9AAB94;
-      --border: #2B3D2C;
-      --brand: #6FAE81;
-      --brand-dark: #4C8A63;
-      --brand-ink: #0E1912;
-      --gold: #E0AE55;
-      --gold-soft: #3A2E1A;
-      --water: #6FC3E0;
-      --water-soft: #1B333B;
-      --food: #E0AE55;
-      --food-soft: #362A18;
-      --shadow: 0 20px 45px -20px rgba(0, 0, 0, 0.6);
-    }
-  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-  :root[data-theme="dark"] {
-    --bg: #101B14;
-    --bg-vignette: #16241A;
-    --surface: #182619;
-    --surface-2: #1F3020;
-    --ink: #E9ECDD;
-    --muted: #9AAB94;
-    --border: #2B3D2C;
-    --brand: #6FAE81;
-    --brand-dark: #4C8A63;
-    --brand-ink: #0E1912;
-    --gold: #E0AE55;
-    --gold-soft: #3A2E1A;
-    --water: #6FC3E0;
-    --water-soft: #1B333B;
-    --food: #E0AE55;
-    --food-soft: #362A18;
-    --shadow: 0 20px 45px -20px rgba(0, 0, 0, 0.6);
-  }
-
-  * { box-sizing: border-box; }
+  html, body { margin: 0; background-color: var(--bg); color: var(--navy); }
 
   body {
-    margin: 0;
     min-height: 100vh;
-    background: radial-gradient(ellipse 900px 500px at 50% -10%, var(--bg-vignette), var(--bg) 60%);
-    color: var(--ink);
-    font-family: 'Noto Sans TC', system-ui, sans-serif;
+    font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
     display: flex;
     justify-content: center;
-    padding: clamp(20px, 5vw, 56px) 16px;
+    position: relative;
+    overflow-x: hidden;
+    padding-block: clamp(24px, 6vw, 56px);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
+
+  /* 低彩度幾何背景 */
+  .geo { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .geo i { position: absolute; display: block; }
+  .geo .a { width: 520px; height: 520px; border-radius: 50%; background: rgba(0,127,163,.08); left: -200px; top: -180px; }
+  .geo .b { width: 360px; height: 360px; border-radius: 50%; background: rgba(237,82,145,.07); right: -140px; bottom: 6%; }
+  .geo .c { width: 220px; height: 220px; border-radius: 36px; background: rgba(21,39,71,.04); right: 6%; top: 8%; transform: rotate(16deg); }
+  .geo .d { width: 120px; height: 120px; border-radius: 50%; border: 2px solid rgba(0,127,163,.18); left: 6%; bottom: 12%; }
+
+  #fx { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
 
   .app {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    max-width: 520px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  header {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 6px 8px 4px;
-  }
-
-  .eyebrow {
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    color: var(--brand);
-    text-transform: uppercase;
-  }
-
-  h1 {
-    font-family: 'Noto Serif TC', serif;
-    font-weight: 900;
-    font-size: clamp(2.1rem, 7vw, 2.6rem);
-    margin: 0;
-    text-wrap: balance;
-    letter-spacing: 0.02em;
-  }
-
-  .tagline {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.95rem;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    padding: clamp(18px, 4vw, 28px);
+    max-width: 480px;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 22px;
   }
 
-  .step {
+  header { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    color: var(--teal);
+    background: var(--teal-soft);
+    padding: 6px 14px;
+    border-radius: 999px;
+  }
+
+  h1 {
+    margin: 0;
+    font-weight: 900;
+    font-size: clamp(2rem, 8vw, 2.4rem);
+    letter-spacing: 0.1em;
+    text-wrap: balance;
+  }
+
+  .tagline { margin: 0; color: var(--muted); font-size: 0.95rem; letter-spacing: 0.04em; text-wrap: balance; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    padding: clamp(18px, 4.5vw, 28px);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 22px;
   }
 
-  .step-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
+  .step { display: flex; flex-direction: column; gap: 12px; }
+  .step-label { display: flex; align-items: center; gap: 10px; }
   .step-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--brand);
-    color: var(--brand-ink);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    font-weight: 700;
-    flex: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--navy); color: #fff;
+    font-size: 0.82rem; font-weight: 700; flex: none;
   }
+  .step-title { font-weight: 700; font-size: 1.02rem; }
 
-  .step-title {
-    font-weight: 700;
-    font-size: 1.02rem;
-  }
-
-  /* Quantity control */
-  .quantity-box {
-    display: flex;
-    align-items: stretch;
-    gap: 10px;
-  }
+  /* 數量 */
+  .quantity-box { display: flex; align-items: stretch; gap: 10px; }
 
   .qty-btn {
-    flex: none;
-    width: 48px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    color: var(--ink);
-    font-size: 1.3rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.15s ease, transform 0.1s ease;
+    flex: none; width: 52px; border-radius: 14px;
+    border: 1px solid var(--line); background: var(--soft); color: var(--navy);
+    font-size: 1.4rem; font-weight: 700; cursor: pointer;
+    transition: background .15s ease, transform .1s ease;
   }
-  .qty-btn:hover { background: var(--border); }
+  .qty-btn:hover { background: var(--teal-soft); }
   .qty-btn:active { transform: scale(0.94); }
-  .qty-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
   .qty-display {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    flex: 1; min-width: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--soft); border: 1px solid var(--line); border-radius: 14px;
     position: relative;
   }
+  .qty-display:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,127,163,.16); }
 
   .qty-display input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    text-align: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-variant-numeric: tabular-nums;
-    font-weight: 700;
-    font-size: clamp(1.8rem, 8vw, 2.4rem);
-    color: var(--ink);
-    padding: 10px 4px;
+    width: 100%; background: transparent; border: none; text-align: center;
+    font-family: inherit; font-variant-numeric: tabular-nums; font-weight: 900;
+    font-size: clamp(2rem, 9vw, 2.6rem); color: var(--navy); padding: 10px 4px 16px;
   }
   .qty-display input:focus-visible { outline: none; }
   .qty-display input::-webkit-outer-spin-button,
   .qty-display input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .qty-display input[type=number] { -moz-appearance: textfield; }
 
-  .qty-unit {
-    position: absolute;
-    right: 14px;
-    bottom: 8px;
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
+  .qty-unit { position: absolute; left: 0; right: 0; bottom: 6px; text-align: center; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; pointer-events: none; }
 
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    color: var(--ink);
-    border-radius: 999px;
-    padding: 7px 14px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    border: 1px solid var(--line); background: var(--card); color: var(--navy);
+    border-radius: 999px; padding: 7px 16px; font: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
   }
-  .chip:hover { border-color: var(--brand); }
-  .chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-soft); }
   .chip.clear { margin-left: auto; color: var(--muted); }
 
-  /* conveyor divider */
-  .conveyor {
-    position: relative;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .qty-btn:focus-visible, .chip:focus-visible, .convert-btn:focus-visible, .reset-link:focus-visible {
+    outline: 3px solid var(--pink); outline-offset: 2px;
   }
+
+  /* 分隔箭頭 */
+  .conveyor { position: relative; height: 18px; display: flex; align-items: center; justify-content: center; }
   .conveyor::before {
-    content: "";
-    position: absolute;
-    left: 8%;
-    right: 8%;
-    top: 50%;
-    height: 2px;
-    background: repeating-linear-gradient(90deg, var(--border) 0 8px, transparent 8px 16px);
+    content: ""; position: absolute; left: 8%; right: 8%; top: 50%; height: 2px;
+    background: repeating-linear-gradient(90deg, var(--line) 0 8px, transparent 8px 16px);
   }
-  .conveyor svg { position: relative; background: var(--bg); padding: 0 8px; }
+  .conveyor svg { position: relative; background: var(--card); padding: 0 8px; }
   .conveyor svg path { stroke: var(--muted); }
 
-  /* Randomizer */
+  /* 隨機說明 */
   .randomizer {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    border: 1.5px dashed var(--border);
-    background: var(--surface-2);
-    border-radius: 16px;
-    padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px;
+    background: var(--soft); border-radius: 16px; padding: 14px 16px;
   }
+  .randomizer-icons { display: flex; align-items: center; gap: 8px; flex: none; }
+  .randomizer-icons svg { width: 28px; height: 28px; }
+  .randomizer-icons svg:first-child { color: var(--teal); }
+  .randomizer-icons svg:last-child { color: var(--pink); }
+  .randomizer-icons .vs { font-size: 0.8rem; color: var(--muted); }
+  .randomizer-desc { margin: 0; font-size: 0.88rem; color: var(--muted); line-height: 1.55; }
+  .randomizer-desc strong { color: var(--navy); }
 
-  .randomizer-icons {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex: none;
-  }
-  .randomizer-icons svg { width: 26px; height: 26px; }
-  .randomizer-icons svg:first-child { color: var(--water); }
-  .randomizer-icons svg:last-child { color: var(--food); }
-  .randomizer-icons .vs {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-  }
-
-  .randomizer-desc {
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-  .randomizer-desc strong { color: var(--ink); }
-
-  /* Split bar */
-  .split-bar {
-    display: flex;
-    height: 10px;
-    border-radius: 999px;
-    overflow: hidden;
-    background: var(--border);
-    margin-top: 10px;
-  }
-  .split-water, .split-food { height: 100%; width: 0%; transition: width 0.5s ease; }
-  .split-water { background: var(--water); }
-  .split-food { background: var(--food); }
-
-  .split-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-  .split-labels .lbl-water { color: var(--water); font-weight: 600; }
-  .split-labels .lbl-food { color: var(--food); font-weight: 600; }
-
-  /* Convert button */
+  /* 轉換按鈕 */
   .convert-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border: none;
-    border-radius: 14px;
-    padding: 16px;
-    background: var(--brand);
-    color: var(--brand-ink);
-    font-family: 'Noto Sans TC', sans-serif;
-    font-size: 1.08rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-    transition: background 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    border: none; border-radius: 999px; padding: 16px;
+    background: var(--teal); color: #fff;
+    font-family: inherit; font-size: 1.08rem; font-weight: 700; letter-spacing: 0.3em; text-indent: 0.3em;
+    cursor: pointer; box-shadow: 0 10px 24px rgba(0,127,163,.3);
+    transition: transform .1s ease, box-shadow .1s ease, filter .15s ease, background .15s ease;
   }
-  .convert-btn:hover:not(:disabled) { background: var(--brand-dark); }
-  .convert-btn:active:not(:disabled) { transform: scale(0.98); }
-  .convert-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
-  .convert-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .convert-btn:hover:not(:disabled) { filter: brightness(1.07); }
+  .convert-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 4px 12px rgba(0,127,163,.28); }
+  .convert-btn:disabled { background: #B9C7D6; box-shadow: none; cursor: not-allowed; }
   .convert-btn svg { width: 20px; height: 20px; }
 
-  /* Result */
+  /* 結果 */
   .result {
-    border-radius: 14px;
-    padding: 16px;
-    background: var(--gold-soft);
-    border: 1px solid color-mix(in srgb, var(--gold) 40%, var(--border));
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    animation: reveal 0.35s ease;
+    border-radius: 18px; padding: 18px;
+    background: var(--soft); border: 1px solid var(--line);
+    display: none; flex-direction: column; gap: 12px;
+    animation: reveal .4s ease;
   }
   .result.show { display: flex; }
-  .result-title {
-    font-weight: 700;
-    color: var(--gold);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .result-detail {
-    font-family: 'JetBrains Mono', monospace;
-    font-variant-numeric: tabular-nums;
-    font-size: 1.05rem;
-  }
+  .result-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .result-title { font-weight: 900; font-size: 1.05rem; }
+  .result-detail { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 
-  @keyframes reveal {
-    from { opacity: 0; transform: translateY(-6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile { border-radius: 14px; padding: 14px 10px; text-align: center; min-width: 0; }
+  .tile.water { background: var(--teal-soft); color: var(--teal); }
+  .tile.food { background: var(--pink-soft); color: var(--pink-ink); }
+  .t-lbl { display: block; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; }
+  .t-num { display: block; font-size: clamp(2rem, 9vw, 2.6rem); font-weight: 900; line-height: 1.15; font-variant-numeric: tabular-nums; }
+
+  .split-bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--line); }
+  .split-water, .split-food { height: 100%; width: 0%; transition: width .6s ease; }
+  .split-water { background: var(--teal); }
+  .split-food { background: var(--pink); }
+  .split-labels { display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: -4px; }
+  .split-labels .lbl-water { color: var(--teal); font-weight: 700; }
+  .split-labels .lbl-food { color: var(--pink-ink); font-weight: 700; }
+
+  @keyframes reveal { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 
   .totals {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 6px;
-    border-top: 1px dashed var(--border);
-    font-size: 0.85rem;
-    color: var(--muted);
+    display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding-top: 14px; border-top: 1px solid var(--line);
+    font-size: 0.85rem; color: var(--muted);
   }
+  .totals-values { font-variant-numeric: tabular-nums; color: var(--navy); font-weight: 700; }
+  .reset-link { background: none; border: none; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font: inherit; font-size: 0.82rem; padding: 4px; }
+  .reset-link:hover { color: var(--navy); }
 
-  .totals-values {
-    font-family: 'JetBrains Mono', monospace;
-    font-variant-numeric: tabular-nums;
-    color: var(--ink);
-    font-weight: 600;
-  }
-
-  .reset-link {
-    background: none;
-    border: none;
-    color: var(--muted);
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 0.82rem;
-    padding: 0;
-  }
-  .reset-link:hover { color: var(--ink); }
-
-  footer {
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.78rem;
-    padding: 4px;
-  }
+  footer { text-align: center; color: var(--muted); font-size: 0.78rem; padding: 4px; }
 
   @media (prefers-reduced-motion: reduce) {
     .result { animation: none; }
@@ -420,6 +235,8 @@
 </style>
 </head>
 <body>
+<div class="geo" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></div>
+<canvas id="fx" aria-hidden="true"></canvas>
 <div class="app">
   <header>
     <span class="eyebrow">資源轉換站</span>
@@ -489,9 +306,15 @@
       <span id="convertBtnLabel">轉換</span>
     </button>
 
-    <div class="result" id="result">
-      <div class="result-title" id="resultTitle">🎲 分配完成</div>
-      <div class="result-detail" id="resultDetail">垃圾 -0 → 水 +0 ・ 糧食 +0</div>
+    <div class="result" id="result" role="status" aria-live="polite">
+      <div class="result-head">
+        <div class="result-title">分配完成</div>
+        <div class="result-detail" id="resultDetail">垃圾 -0 → 水 +0 ・ 糧食 +0</div>
+      </div>
+      <div class="tiles">
+        <div class="tile water"><span class="t-lbl">水</span><span class="t-num" id="waterNum">+0</span></div>
+        <div class="tile food"><span class="t-lbl">糧食</span><span class="t-num" id="foodNum">+0</span></div>
+      </div>
       <div class="split-bar" aria-hidden="true">
         <div class="split-water" id="splitWater"></div>
         <div class="split-food" id="splitFood"></div>
@@ -522,6 +345,8 @@
   var convertBtnLabel = document.getElementById('convertBtnLabel');
   var result = document.getElementById('result');
   var resultDetail = document.getElementById('resultDetail');
+  var waterNum = document.getElementById('waterNum');
+  var foodNum = document.getElementById('foodNum');
   var splitWater = document.getElementById('splitWater');
   var splitFood = document.getElementById('splitFood');
   var splitWaterLabel = document.getElementById('splitWaterLabel');
@@ -529,6 +354,7 @@
   var totalsValues = document.getElementById('totalsValues');
   var resetTotals = document.getElementById('resetTotals');
 
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var MAX_QTY = 99999;
   var totals = { water: 0, food: 0 };
 
@@ -590,12 +416,90 @@
     return { water: water, food: qty - water };
   }
 
+  /* ---------- 特效：數字滾動、彩色紙屑、音效（不影響分配結果） ---------- */
+  var fx = document.getElementById('fx'), fctx = fx.getContext('2d');
+  var particles = [], fxRunning = false, sprites = {};
+
+  function sizeFx() { fx.width = window.innerWidth; fx.height = window.innerHeight; }
+  sizeFx();
+  window.addEventListener('resize', sizeFx);
+
+  function sprite(color) {
+    if (sprites[color]) return sprites[color];
+    var s = document.createElement('canvas');
+    s.width = s.height = 24;
+    var g = s.getContext('2d');
+    g.fillStyle = color;
+    g.beginPath(); g.arc(12, 12, 10, 0, Math.PI * 2); g.fill();
+    return (sprites[color] = s);
+  }
+  function burst(x, y, n, colors, power) {
+    for (var i = 0; i < n; i++) {
+      var a = Math.random() * Math.PI * 2, sp = Math.random() * power + 2;
+      particles.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 3, life: 1,
+        decay: 0.009 + Math.random() * 0.012, size: Math.random() * 6 + 5,
+        color: colors[Math.floor(Math.random() * colors.length)] });
+    }
+    if (particles.length > 200) particles.splice(0, particles.length - 200);
+    if (!fxRunning) { fxRunning = true; requestAnimationFrame(fxTick); }
+  }
+  function fxTick() {
+    fctx.clearRect(0, 0, fx.width, fx.height);
+    var j = 0;
+    for (var k = 0; k < particles.length; k++) {
+      var p = particles[k];
+      p.x += p.vx; p.y += p.vy; p.vy += 0.16; p.vx *= 0.985; p.life -= p.decay;
+      if (p.life <= 0) continue;
+      particles[j++] = p;
+      fctx.globalAlpha = Math.min(1, p.life * 1.6);
+      fctx.drawImage(sprite(p.color), p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+    }
+    particles.length = j;
+    if (j) requestAnimationFrame(fxTick);
+    else { fxRunning = false; fctx.clearRect(0, 0, fx.width, fx.height); }
+  }
+
+  var ac;
+  function tone(f, t, d, type, v) {
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.type = type || 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(v || 0.1, ac.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + t + d);
+      o.connect(g); g.connect(ac.destination);
+      o.start(ac.currentTime + t); o.stop(ac.currentTime + t + d);
+    } catch (e) { /* audio unavailable */ }
+  }
+
+  function countUp(el, target, prefix) {
+    if (reduceMotion || target === 0) { el.textContent = prefix + target; return; }
+    var start = performance.now(), dur = 700;
+    function step(now) {
+      var u = Math.min(1, (now - start) / dur);
+      var eased = 1 - Math.pow(1 - u, 3);
+      el.textContent = prefix + Math.round(target * eased);
+      if (u < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function celebrate() {
+    [523, 659, 784].forEach(function (f, i) { tone(f, i * 0.09, 0.25, 'triangle', 0.1); });
+    if (reduceMotion) return;
+    var r = result.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + 40, 44, ['#007FA3', '#ED5291', '#152747', '#7CCBE0'], 8);
+  }
+
   convertBtn.addEventListener('click', function () {
     var qty = getQty();
     if (qty <= 0) return;
 
     convertBtn.disabled = true;
     convertBtnLabel.textContent = '分配中…';
+    if (!reduceMotion) {
+      for (var i = 0; i < 6; i++) tone(400 + i * 40, i * 0.07, 0.05, 'square', 0.03);
+    }
 
     setTimeout(function () {
       var split = randomSplit(qty);
@@ -615,6 +519,9 @@
       splitFoodLabel.textContent = '糧食 ' + foodPct + '%';
 
       result.classList.add('show');
+      countUp(waterNum, split.water, '+');
+      countUp(foodNum, split.food, '+');
+      celebrate();
 
       convertBtnLabel.textContent = '轉換';
       setQty(0);
